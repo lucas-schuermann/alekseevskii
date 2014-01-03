@@ -22,10 +22,11 @@ public:
 private:
     void addBlocksFrom(Vector90 block);
     bool checkRedundancy(Vector90 block);
-    
+
     bool checkObjectCondition(Vector90 block);
     Vector90 max;
     Vector90 min;
+    double* ric(int i, int j);
     
     double getMax(int i, int j, int k);
     double getMin(int i, int j, int k);

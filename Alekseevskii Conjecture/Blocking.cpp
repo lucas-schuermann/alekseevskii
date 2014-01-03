@@ -103,6 +103,28 @@ double Blocking::getMin(int i, int j, int k)
         return 0.0;
 }
 
+double* Blocking::ric(int i, int j)
+{
+    double sumMax = 0.0;
+    double sumMin = 0.0;
+    for(int k = 1; k <= 6; k++)
+        for(int l = 1; l <= 6; l++)
+        {
+            // TODO: min/max of polynomial by term
+            
+            sumMax += - (1/2)*getMax(i,k,l)*getMax(j,k,l)
+                      - (1/2)*getMax(j,k,l)*getMax(i,l,k)
+                      + (1/4)*getMax(k,l,i)*getMax(k,l,j);
+            sumMin += - (1/2)*getMin(i,k,l)*getMin(j,k,l)
+                      - (1/2)*getMin(j,k,l)*getMin(i,l,k)
+                      + (1/4)*getMin(k,l,i)*getMin(k,l,j);
+        }
+    double* ret = new double[2];
+    ret[0] = sumMax;
+    ret[1] = sumMin;
+    return ret;
+}
+
 bool Blocking::checkObjectCondition(Vector90 block)
 {
     // find max and min for interval computation of conditions
@@ -151,8 +173,21 @@ bool Blocking::checkObjectCondition(Vector90 block)
             }
     
     // einstein condition
-    
-    
+    for(int i = 1; i <= 6; i++)
+        for(int j = 1; j <= 6; j++)
+            if(i != j)
+            {
+                double* ij = ric(i,j);
+                double* ii = ric(i,i);
+                double* jj = ric(j,j);
+                if(!((0 >= ij[1]) && (0 <= ij[0])))
+                    return false;
+                double max = fabs(ii[0] - jj[0]);
+                double min = fabs(ii[1] - jj[1]);
+                if(!((0 >= min) && (0 <= max)))
+                    return false;
+            }
+
     return true;
 }
 

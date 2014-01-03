@@ -6,8 +6,8 @@
 //  Copyright (c) 2013 Lucas Schuermann. All rights reserved.
 //
 
-#ifndef Alekseevskii_Conjecture_Common_h
-#define Alekseevskii_Conjecture_Common_h
+#ifndef __Alekseevskii_Conjecture__Common__
+#define __Alekseevskii_Conjecture__Common__
 
 #define PROFILING true
 #define BLOCKING_SIDE_LENGTH 1.0
@@ -77,4 +77,4 @@ private:
     double* x;
 };
 
-#endif
+#endif /* defined(__Alekseevskii_Conjecture__Common__) */
