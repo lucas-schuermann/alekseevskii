@@ -17,10 +17,10 @@ def test1():
     plt.show()
 
 if __name__ == "__main__":
-    print "select test"
+    print("select test")
     test = int(stdin.readline())
-    print test
+    print(test)
     if test == 0:
         test1()
     else:
-        print "No valid test index selected. Exiting..."
+        print("No valid test index selected. Exiting...")
