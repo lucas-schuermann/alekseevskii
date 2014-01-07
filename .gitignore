@@ -1,3 +1,5 @@
 *.hmap
 DerivedData/
 Alekseevskii Conjecture.xcodeproj/
+.idea
+*.iml
