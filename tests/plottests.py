@@ -40,6 +40,7 @@ import numpy as np
 import pylab
 
 
+# temporary testing class
 class TestDataGen(object):
     def __init__(self, init=50):
         self.data = self.init = init
@@ -303,16 +304,12 @@ class GraphFrame(wx.Frame):
             self.canvas.print_figure(path, dpi=self.dpi)
             self.flash_status_message("Saved to %s" % path)
 
-    def on_redraw_timer(self, event):
-        # if paused do not add data, but still redraw the plot
-        # (to respond to scale modifications, grid change, etc.)
-        #
+    def on_redraw_timer(self):
         if not self.paused:
             self.data.append(self.datagen.next())
-
         self.draw_plot()
 
-    def on_exit(self, event):
+    def on_exit(self):
         self.Destroy()
 
     def flash_status_message(self, msg, flash_len_ms=1500):

@@ -23,14 +23,20 @@ class Vector:
 
 # TODO: check if value is valid
 def ind(i, j, k):
-    return (j-i)+5+5*(i-2)-(1/2)*(i-1)*(i-2)+16*(k-1)
-
+    ret = (j-i)+5+5*(i-2)-(1/2)*(i-1)*(i-2)+16*(k-1)
+    assert(0 <= ret <= 89)
+    return ret
 
 class BlockingAlgorithm:
     def __init__(self):
+        self.blocks
+
+
+class BlockingAlgorithmSerial:
+    def __init__(self):
         self.blocks = list()
-        self.side_length = 1.0
-        self.sphere_bound = math.sqrt(90)/2*self.side_length
+        self.side_length = 1.
+        self.sphere_bound = math.sqrt(90.)/2.*self.side_length
 
     def object_condition(self, block):
         # find min and max on block
@@ -57,7 +63,7 @@ class BlockingAlgorithm:
             for j in range(i+1, 7):
                 unimin += get_min(i, j, j)
                 unimax += get_max(i, j, j)
-        if not unimin <= 0 <= unimax:
+        if not unimin <= 0. <= unimax:
             return False
 
         # sphere condition
@@ -80,8 +86,34 @@ class BlockingAlgorithm:
                                 + get_min(k, i, m)*get_min(m, j, l)
                             jacmax += get_max(i, j, m)*get_max(m, k, l)+get_max(j, k, m)*get_max(m, i, l) \
                                 + get_max(k, i, m)*get_max(m, j, l)
-                    if not jacmin <= 0 <= jacmax:
+                    if not jacmin <= 0. <= jacmax:
                         return False
+
+        def poly_min_max(i, j, k, l):
+            def term(expr):
+                if type(expr) is not float:
+                    for e in range(3):
+                        if expr[e] is 0:
+                            expr[e] = i
+                        elif expr[e] is 1:
+                            expr[e] = j
+                        elif expr[e] is 2:
+                            expr[e] = k
+                        elif expr[e] is 3:
+                            expr[e] = l
+                    return get_min(expr[0], expr[1], expr[2]), get_max(expr[0], expr[1], expr[2])
+                else:
+                    return expr, expr
+
+            # i=0, j=1, k=2, l=3
+            terms = ((-1./2., (0, 2, 3), (1, 2, 3)), ((-1/2), (1, 2, 3), (0, 3, 2)), ((1/4), (2, 3, 0), (2, 3, 1)))
+            for t in terms:
+                print t
+                out = 1.0
+                for i in t:
+                    val = term(i)
+                    if val[0] < val[1]:
+                        pass
 
         # einstein condition
         def ric(i, j):
@@ -90,10 +122,10 @@ class BlockingAlgorithm:
             for k in range(1, 7):
                 for l in range(1, 7):
                     # TODO: min and max of these polynomials depending on value of variable
-                    smin += - (1/2)*get_min(i, k, l)*get_min(j, k, l) - (1/2)*get_min(j, k, l)*get_min(i, l, k) \
-                        + (1/4)*get_min(k, l, i)*get_min(k, l, j)
-                    smax += - (1/2)*get_max(i, k, l)*get_max(j, k, l) - (1/2)*get_max(j, k, l)*get_max(i, l, k) \
-                        + (1/4)*get_max(k, l, i)*get_max(k, l, j)
+                    smin += - (1./2.)*get_min(i, k, l)*get_min(j, k, l) - (1./2.)*get_min(j, k, l)*get_min(i, l, k) \
+                        + (1./4.)*get_min(k, l, i)*get_min(k, l, j)
+                    smax += - (1./2.)*get_max(i, k, l)*get_max(j, k, l) - (1./2.)*get_max(j, k, l)*get_max(i, l, k) \
+                        + (1./4.)*get_max(k, l, i)*get_max(k, l, j)
             return smin, smax
 
         for i in range(1, 7):
@@ -102,11 +134,11 @@ class BlockingAlgorithm:
                     ijmin, ijmax = ric(i, j)
                     iimin, iimax = ric(i, i)
                     jjmin, jjmax = ric(j, j)
-                    if not ijmin <= 0 <= ijmax:
+                    if not ijmin <= 0. <= ijmax:
                         return False
 
                     # TODO: is this correct? should it be |ric{ii} - ric{jj}|?
-                    if not (iimin - jjmin) <= 0 <= (iimax - jjmax):
+                    if not (iimin - jjmin) <= 0. <= (iimax - jjmax):
                         return False
 
     def add_blocks_from(self, b0):
@@ -144,7 +176,7 @@ class BlockingAlgorithm:
     def iterate(self):
         start = Vector()
         start[ind(1, 2, 1)] = start[ind(1, 2, 2)] = start[ind(1, 3, 1)] = start[ind(1, 3, 3)] = start[ind(2, 3, 2)] \
-            = start[ind(2, 3, 3)] = 0
+            = start[ind(2, 3, 3)] = 0.
         start[ind(1, 2, 3)] = start[ind(1, 3, 2)] = 1.0 / math.sqrt(6.0)
         start[ind(2, 3, 1)] = - 1.0 / math.sqrt(6.0)
         print start
@@ -162,12 +194,20 @@ class BlockingAlgorithm:
         return self.blocks
 
 if __name__ == "__main__":
-    blocker = BlockingAlgorithm()
+    blocker = BlockingAlgorithmSerial()
 
-    t0 = time()
-    output = blocker.iterate()
-    tf = time()
+    start = Vector()
+    start[ind(1, 2, 1)] = start[ind(1, 2, 2)] = start[ind(1, 3, 1)] = start[ind(1, 3, 3)] = start[ind(2, 3, 2)] \
+        = start[ind(2, 3, 3)] = 0.
+    start[ind(1, 2, 3)] = start[ind(1, 3, 2)] = 1.0 / math.sqrt(6.0)
+    start[ind(2, 3, 1)] = - 1.0 / math.sqrt(6.0)
+    print start
+    print blocker.object_condition(start)
 
-    elapsed = tf - t0
-    print "elapsed time:", elapsed, "seconds"
-    print "blocks used:", len(output)
+    #t0 = time()
+    #output = blocker.iterate()
+    #tf = time()
+
+    #elapsed = tf - t0
+    #print "elapsed time:", elapsed, "seconds"
+    #print "blocks used:", len(output)
