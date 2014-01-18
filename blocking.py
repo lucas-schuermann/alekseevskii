@@ -21,24 +21,25 @@ class Vector:
         return str(self.x)
 
 
-# TODO: check if value is valid
 def ind(i, j, k):
-    ret = (j-i)+5+5*(i-2)-(1/2)*(i-1)*(i-2)+16*(k-1)
-    assert(0 <= ret <= 89)
-    return ret
+    return int((j-i)+5+5*(i-2)-(1./2.)*(i-1)*(i-2)+15*(k-1))
+
 
 class BlockingAlgorithm:
-    def __init__(self):
-        self.blocks
-
-
-class BlockingAlgorithmSerial:
     def __init__(self):
         self.blocks = list()
         self.side_length = 1.
         self.sphere_bound = math.sqrt(90.)/2.*self.side_length
 
-    def object_condition(self, block):
+    def iterate(self):
+        pass
+
+
+class BlockingAlgorithmSerial(BlockingAlgorithm):
+    def __init__(self):
+        BlockingAlgorithm.__init__(self)
+
+    def _object_condition(self, block):
         # find min and max on block
         blkmin = Vector()
         blkmax = Vector()
@@ -141,7 +142,7 @@ class BlockingAlgorithmSerial:
                     if not (iimin - jjmin) <= 0. <= (iimax - jjmax):
                         return False
 
-    def add_blocks_from(self, b0):
+    def _add_blocks_from(self, b0):
         print "iterating over", b0
         for side in range(180):
             delta = Vector()
@@ -150,8 +151,8 @@ class BlockingAlgorithmSerial:
             else:
                 delta[side - 90] = -self.side_length
             print "testing", b0 + delta, "..."
-            if self.object_condition(b0 + delta):
-                if not self.redundant(b0 + delta):
+            if self._object_condition(b0 + delta):
+                if not self._redundant(b0 + delta):
                     self.blocks.append(b0 + delta)
                     print "added"
                 else:
@@ -159,7 +160,7 @@ class BlockingAlgorithmSerial:
             else:
                 print "rejected"
 
-    def redundant(self, block):
+    def _redundant(self, block):
         for b in self.blocks:
             if block.x == b.x:
                 return True
@@ -188,7 +189,7 @@ class BlockingAlgorithmSerial:
                 break
             else:
                 b = self.blocks[checked]
-                self.add_blocks_from(b)
+                self._add_blocks_from(b)
                 self._print_blocks(self.blocks)
                 checked += 1
         return self.blocks
@@ -202,7 +203,7 @@ if __name__ == "__main__":
     start[ind(1, 2, 3)] = start[ind(1, 3, 2)] = 1.0 / math.sqrt(6.0)
     start[ind(2, 3, 1)] = - 1.0 / math.sqrt(6.0)
     print start
-    print blocker.object_condition(start)
+    print blocker._object_condition(start)
 
     #t0 = time()
     #output = blocker.iterate()

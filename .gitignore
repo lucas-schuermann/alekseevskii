@@ -3,3 +3,4 @@ DerivedData/
 Alekseevskii Conjecture.xcodeproj/
 .idea
 *.iml
+*.pyc
