@@ -1,6 +1,6 @@
 __author__ = 'Lucas Schuermann'
 
-from blocking import BlockingAlgorithmSerial
+from blocking.blocking import BlockingAlgorithmSerial
 
 
 class Manager:

@@ -1,9 +1,10 @@
 __author__ = 'Lucas'
 
-from opencl import CL
 import numpy as np
 
-from blocking import Vector
+from opencl import CL
+from blocking.blocking import Vector
+
 
 if __name__ == "__main__":
     cl = CL()
