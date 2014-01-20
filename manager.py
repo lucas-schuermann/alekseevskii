@@ -9,6 +9,7 @@ class Manager:
     def __init__(self):
         self.implementation = self.implementation_choices[0]
         self.blocker = None
+        self.blocks = None
 
     def set_implementation(self, implementation):
         self.implementation = implementation
@@ -24,4 +25,4 @@ class Manager:
             print "Invalid implementation choice:", self.implementation
 
     def run_blocking(self):
-        self.blocker.iterate()
+        self.blocks = self.blocker.iterate()
