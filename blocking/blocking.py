@@ -65,20 +65,16 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
             return False
 
         def poly_min_max(terms, i, j, k, l, m=None):
+            vars = [i, j ,k, l, m]
+
             def term(expr):
                 if type(expr) is not float:
-                    for e in range(3):
-                        if expr[e] is 0:
-                            expr[e] = i
-                        elif expr[e] is 1:
-                            expr[e] = j
-                        elif expr[e] is 2:
-                            expr[e] = k
-                        elif expr[e] is 3:
-                            expr[e] = l
-                        elif expr[e] is 4:
-                            expr[e] = m
-                    return get_min(expr[0], expr[1], expr[2]), get_max(expr[0], expr[1], expr[2])
+                    argcnt = 0
+                    args = [0, 0, 0]
+                    for exprcnt in range(3):
+                        args[argcnt] = vars[expr[exprcnt]]
+                        argcnt += 1
+                    return get_min(args[0], args[1], args[2]), get_max(args[0], args[1], args[2])
                 else:
                     return expr, expr
 
@@ -102,10 +98,13 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
                         for m in range(1, 7):
                             # TODO: min and max by term of this poly also? n
                             # note that multiple neg terms can result in positive answer that mimics that of the maximum
-                            jacmin += get_min(i, j, m)*get_min(m, k, l)+get_min(j, k, m)*get_min(m, i, l) \
-                                + get_min(k, i, m)*get_min(m, j, l)
-                            jacmax += get_max(i, j, m)*get_max(m, k, l)+get_max(j, k, m)*get_max(m, i, l) \
-                                + get_max(k, i, m)*get_max(m, j, l)
+                            #jacmin += get_min(i, j, m)*get_min(m, k, l)+get_min(j, k, m)*get_min(m, i, l) \
+                            #    + get_min(k, i, m)*get_min(m, j, l)
+                            #jacmax += get_max(i, j, m)*get_max(m, k, l)+get_max(j, k, m)*get_max(m, i, l) \
+                            #    + get_max(k, i, m)*get_max(m, j, l)
+                            rmin, rmax = poly_min_max(jacterms, i, j, k, l, m)
+                            jacmin += rmin
+                            jacmax += rmax
                     if not jacmin <= 0. <= jacmax:
                         return False
 
