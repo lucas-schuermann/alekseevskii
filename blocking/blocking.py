@@ -10,7 +10,6 @@ class BlockingAlgorithm:
         self.blocks = list()
         self.side_length = 1.0
         self.sphere_bound = math.sqrt(90.)/2.*self.side_length
-        self.epsilon = 1.0e-10
         self.num_checked = 0
 
     def iterate(self):
@@ -53,6 +52,7 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
                 unimin += get_min(i, j, j)
                 unimax += get_max(i, j, j)
         if not unimin <= 0. <= unimax:
+            print "Failed unimodular"
             return False
 
         # sphere condition
@@ -62,15 +62,16 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
             s += block[i]**2
         m = math.sqrt(s)
         if not (m - b) <= 1.0 <= (m + b):
+            print "Failed sphere"
             return False
 
         def poly_min_max(terms, i, j, k, l, m=None):
-            vars = [i, j ,k, l, m]
+            vars = [i, j, k, l, m]
 
             def term(expr):
                 if type(expr) is not float:
                     argcnt = 0
-                    args = [0, 0, 0]
+                    args = [0]*3
                     for exprcnt in range(3):
                         args[argcnt] = vars[expr[exprcnt]]
                         argcnt += 1
@@ -78,13 +79,29 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
                 else:
                     return expr, expr
 
+            mins = list()
+            maxes = list()
             for t in terms:
-                print t
-                out = 1.0
+                tmin = tmax = 1.0
                 for i in t:
-                    val = term(i)
-                    if val[0] < val[1]:
-                        pass
+                    valmin, valmax = term(i)
+                    tmp1 = tmin*valmin
+                    tmp2 = tmin*valmax
+                    tmp3 = tmax*valmin
+                    tmp4 = tmax*valmax
+                    if tmp1 < tmp2:
+                        tmin = tmp1
+                    else:
+                        tmin = tmp2
+                    if tmp3 > tmp4:
+                        tmax = tmp3
+                    else:
+                        tmax = tmp4
+
+                mins.append(tmin)
+                maxes.append(tmax)
+
+            return sum(mins), sum(maxes)
 
         # jacobi condition
         # i=0, j=1, k=2, l=3, m=4
@@ -96,7 +113,6 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
                     jacmin = jacmax = 0.0
                     for l in range(1, 7):
                         for m in range(1, 7):
-                            # TODO: min and max by term of this poly also? n
                             # note that multiple neg terms can result in positive answer that mimics that of the maximum
                             #jacmin += get_min(i, j, m)*get_min(m, k, l)+get_min(j, k, m)*get_min(m, i, l) \
                             #    + get_min(k, i, m)*get_min(m, j, l)
@@ -106,18 +122,18 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
                             jacmin += rmin
                             jacmax += rmax
                     if not jacmin <= 0. <= jacmax:
+                        print "Failed Jacobi"
                         return False
 
         # einstein condition
         # i=0, j=1, k=2, l=3
-        einterms = ((-1./2., (0, 2, 3), (1, 2, 3)), ((-1/2), (1, 2, 3), (0, 3, 2)), ((1/4), (2, 3, 0), (2, 3, 1)))
+        einterms = ((-1./2., (0, 2, 3), (1, 2, 3)), ((-1./2.), (1, 2, 3), (0, 3, 2)), ((1./4.), (2, 3, 0), (2, 3, 1)))
 
         def ric(i, j):
             smin = 0.0
             smax = 0.0
             for k in range(1, 7):
                 for l in range(1, 7):
-                    # TODO: min and max of these polynomials depending on value of variable
                     #smin += - (1./2.)*get_min(i, k, l)*get_min(j, k, l) - (1./2.)*get_min(j, k, l)*get_min(i, l, k) \
                     #    + (1./4.)*get_min(k, l, i)*get_min(k, l, j)
                     #smax += - (1./2.)*get_max(i, k, l)*get_max(j, k, l) - (1./2.)*get_max(j, k, l)*get_max(i, l, k) \
@@ -133,12 +149,15 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
                     ijmin, ijmax = ric(i, j)
                     iimin, iimax = ric(i, i)
                     jjmin, jjmax = ric(j, j)
+
                     if not ijmin <= 0. <= ijmax:
+                        print "Failed: No Einstein metrics"
                         return False
 
-                    # TODO: is this correct? should it be |ric{ii} - ric{jj}|?
-                    if not (iimin - jjmin) <= 0. <= (iimax - jjmax):
+                    if not (iimin - jjmax) <= 0. <= (iimax - jjmin):
+                        print "Failed: No possibility of Einstein metrics"
                         return False
+        return True
 
     def _add_blocks_from(self, b0):
         print "iterating over", b0
@@ -161,7 +180,7 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
 
     def _redundant(self, block):
         for b in self.blocks:
-            if b.x-self.epsilon <= block.x <= b.x+self.epsilon:
+            if np.array_equal(b, block):
                 return True
         return False
 
@@ -178,9 +197,6 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
         start[ind(2,3,1)] = start[ind(5,6,4)] = -1.0/math.sqrt(6.0)
         self.blocks.append(start)
         checked = 0
-
-        # TODO: fails jacobi condition
-        print "START BLOCK CONDITION:", self._object_condition(start)
 
         while True:
             if checked >= len(self.blocks):

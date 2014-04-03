@@ -1,15 +1,16 @@
 __author__ = 'Lucas Schuermann'
 
-from blocking.blocking import BlockingAlgorithmSerial
-
+from blocking.blocking import BlockingAlgorithm, BlockingAlgorithmSerial
+from evaluation.evaluation import EvaluationAlgorithm, EvaluationAlgorithmSerial
 
 class Manager:
     implementation_choices = ["Serial", "Serial (Cython)", "Multithreaded", "OpenCL"]
 
     def __init__(self):
         self.implementation = self.implementation_choices[0]
-        self.blocker = None
+        self.blocker = BlockingAlgorithm
         self.blocks = None
+        self.evaluator = EvaluationAlgorithm
 
     def set_implementation(self, implementation):
         self.implementation = implementation
@@ -26,3 +27,9 @@ class Manager:
 
     def run_blocking(self):
         self.blocks = self.blocker.iterate()
+
+    def setup_evaluation(self):
+        self.evaluator = EvaluationAlgorithmSerial()
+
+    def run_evaluation(self):
+        return self.evaluator.iterate(self.blocks)
