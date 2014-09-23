@@ -38,7 +38,7 @@ class BlockingAlgorithmCython(BlockingAlgorithm):
 
     def _redundant(self, block):
         for b in self.blocks:
-            if b.x-self.epsilon <= block.x <= b.x+self.epsilon:
+            if np.array_equal(b, block):
                 return True
         return False
 

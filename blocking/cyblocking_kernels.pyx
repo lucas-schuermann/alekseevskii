@@ -31,8 +31,8 @@ def object_condition(block, side_length, sphere_bound):
         return 0.0
 
     # unimodular condition
-    cdef double unimin = 0.0
-    cdef double unimax = 0.0
+    unimin = 0.0
+    unimax = 0.0
     for i in range(1, 7):
         for j in range(i+1, 7):
             unimin += get_min(i, j, j)
@@ -42,8 +42,8 @@ def object_condition(block, side_length, sphere_bound):
         return False
 
     # sphere condition
-    cdef double s = 0.0
-    cdef double b = sphere_bound
+    s = 0.0
+    b = sphere_bound
     for i in range(90):
         s += block[i]**2
     m = math.sqrt(s)
@@ -68,8 +68,7 @@ def object_condition(block, side_length, sphere_bound):
         mins = list()
         maxes = list()
         for t in terms:
-            cdef double tmin = 1.0
-            cdef double tmax = 1.0
+            tmin = tmax = 1.0
             for i in t:
                 valmin, valmax = term(i)
                 tmp1 = tmin*valmin
@@ -97,8 +96,7 @@ def object_condition(block, side_length, sphere_bound):
     for k in range(1, 7):
         for i in range(1, 7):
             for j in range(i+1, 7):
-                cdef double jacmin = 0.0
-                cdef double jacmax = 0.0
+                jacmin = jacmax = 0.0
                 for l in range(1, 7):
                     for m in range(1, 7):
                         # note that multiple neg terms can result in positive answer that mimics that of the maximum
@@ -106,7 +104,7 @@ def object_condition(block, side_length, sphere_bound):
                         #    + get_min(k, i, m)*get_min(m, j, l)
                         #jacmax += get_max(i, j, m)*get_max(m, k, l)+get_max(j, k, m)*get_max(m, i, l) \
                         #    + get_max(k, i, m)*get_max(m, j, l)
-                        cdef double rmin, rmax = poly_min_max(jacterms, i, j, k, l, m)
+                        rmin, rmax = poly_min_max(jacterms, i, j, k, l, m)
                         jacmin += rmin
                         jacmax += rmax
                 if not jacmin <= 0. <= jacmax:
@@ -118,15 +116,15 @@ def object_condition(block, side_length, sphere_bound):
     einterms = ((-1./2., (0, 2, 3), (1, 2, 3)), ((-1./2.), (1, 2, 3), (0, 3, 2)), ((1./4.), (2, 3, 0), (2, 3, 1)))
 
     def ric(i, j):
-        cdef double smin = 0.0
-        cdef double smax = 0.0
+        smin = 0.0
+        smax = 0.0
         for k in range(1, 7):
             for l in range(1, 7):
                 #smin += - (1./2.)*get_min(i, k, l)*get_min(j, k, l) - (1./2.)*get_min(j, k, l)*get_min(i, l, k) \
                 #    + (1./4.)*get_min(k, l, i)*get_min(k, l, j)
                 #smax += - (1./2.)*get_max(i, k, l)*get_max(j, k, l) - (1./2.)*get_max(j, k, l)*get_max(i, l, k) \
                 #    + (1./4.)*get_max(k, l, i)*get_max(k, l, j)
-                cdef double rmin, rmax = poly_min_max(einterms, i, j, k, l)
+                rmin, rmax = poly_min_max(einterms, i, j, k, l)
                 smin += rmin
                 smax += rmax
         return smin, smax
@@ -134,15 +132,15 @@ def object_condition(block, side_length, sphere_bound):
     for i in range(1, 7):
         for j in range(1, 7):
             if i is not j:
-                cdef double ijmin, ijmax = ric(i, j)
-                cdef double iimin, iimax = ric(i, i)
-                cdef double jjmin, jjmax = ric(j, j)
+                ijmin, ijmax = ric(i, j)
+                iimin, iimax = ric(i, i)
+                jjmin, jjmax = ric(j, j)
 
                 if not ijmin <= 0. <= ijmax:
-                    print "Failed Einstein #1"
+                    print "Failed: No Einstein metrics"
                     return False
 
-                # TODO: is this correct? from |ric{ii} - ric{jj}| > e?
-                if not (iimin - jjmin) <= 0. <= (iimax - jjmax):
-                    print "Failed Einstein #2"
+                if not (iimin - jjmax) <= 0. <= (iimax - jjmin):
+                    print "Failed: No possibility of Einstein metrics"
                     return False
+    return True

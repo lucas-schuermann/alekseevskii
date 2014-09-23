@@ -1,23 +1,3 @@
-"""
-This demo demonstrates how to draw a dynamic mpl (matplotlib)
-plot in a wxPython application.
-
-It allows "live" plotting as well as manual zooming to specific
-regions.
-
-Both X and Y axes allow "auto" or "manual" settings. For Y, auto
-mode sets the scaling of the graph to see all the data points.
-For X, auto mode makes the graph "follow" the data. Set it X min
-to manual 0 to always see the whole data from the beginning.
-
-Note: press Enter in the 'manual' text box to make a new value
-affect the plot.
-
-Eli Bendersky (eliben@gmail.com)
-License: this code is in the public domain
-Last modified: 31.07.2008
-"""
-
 import wxversion
 wxversion.ensureMinimal('2.8')
 

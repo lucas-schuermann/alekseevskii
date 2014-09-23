@@ -3,6 +3,7 @@ __author__ = 'Lucas Schuermann'
 from blocking.blocking import BlockingAlgorithm, BlockingAlgorithmSerial
 from evaluation.evaluation import EvaluationAlgorithm, EvaluationAlgorithmSerial
 
+
 class Manager:
     implementation_choices = ["Serial", "Serial (Cython)", "Multithreaded", "OpenCL"]
 
