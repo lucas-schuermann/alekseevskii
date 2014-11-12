@@ -7,6 +7,11 @@ import random
 import sys
 import wx
 
+
+# building upon an online tutorial to develop the GUI part of the application in Python for
+# real-time feedback on the algorithm's performance and progress
+
+
 # The recommended way to use wx with mpl is with the WXAgg
 # backend.
 #

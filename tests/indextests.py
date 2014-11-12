@@ -5,6 +5,9 @@ import timeit
 import pyximport; pyximport.install()
 import cythontests
 
+# python vs Cython for the object condition, and testing various implementation to find the quickest
+# was to obtain the index in a vector from the mu i mu j and mu k
+
 
 def ind(i, j, k):
     return int((j-i)+5+5*(i-2)-(1./2.)*(i-1)*(i-2)+15*(k-1))

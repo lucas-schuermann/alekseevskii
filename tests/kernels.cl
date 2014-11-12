@@ -1,3 +1,11 @@
+/*
+    This is the file for starting work on the kernels of the OpenCL implementation
+
+    This still lacks much thinking through the algorithm, specifically concerning data transfer and concurrent
+    access to the arrays
+*/
+
+
 // TODO: represent double90[n] as double[90*n]
 // position = current_batch[index[i] * i]
 // index(i) = 0 ... 90

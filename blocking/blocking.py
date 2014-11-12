@@ -1,5 +1,17 @@
 __author__ = 'Lucas Schuermann'
 
+######
+# The core blocking algorithm
+#    This implements the core iterative algorithm including condition checks over the blocks
+#    ind is used to find the index in the blocking arrays (see notes)
+#    Blocking algorithm consists of the object condition implementation which checks a block.
+#    Additionally, it has methods such as add blocks from which moves to the next level of iteration
+##
+#    Starting condition and constants are set according to notes
+#    Additionally, see notes for the mathematics behind the implementation of each specific condition
+#    unimodular, sphere, jacobi, einstein with poly min max in object condition method
+######
+
 from time import time
 import math
 import numpy as np
@@ -14,7 +26,6 @@ class BlockingAlgorithm:
 
     def iterate(self):
         pass
-
 
 def ind(i, j, k):
     return int((j-i)+5+5*(i-2)-(1.0/2.0)*(i-1)*(i-2)+15*(k-1)-1)
@@ -65,6 +76,7 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
             print "Failed sphere"
             return False
 
+        # returns the min and max of a polynomial with terms given by a list of double of triplates
         def poly_min_max(terms, i, j, k, l, m=None):
             vars = [i, j, k, l, m]
 

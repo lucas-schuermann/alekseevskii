@@ -6,6 +6,13 @@ import wx
 import wx.py
 from subprocess import Popen, PIPE
 
+# Testing how to add in a console interface to the program while still running the blocking algorithm concurrently
+# this needs to be perfected and implemented so that it is possible to start/stop/save the progress
+# in the case that it is running on a distributed system
+# error reporting and other features will also be invaluable in order to ensure its proper execution over a long
+# time frame
+
+
 class BashProcessThread(threading.Thread):
     def __init__(self, readlineFunc):
         threading.Thread.__init__(self)

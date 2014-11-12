@@ -4,6 +4,14 @@ import pyopencl as cl
 import numpy
 from collections import defaultdict
 
+#####
+# OpenCL helper class based upon pyopencl
+#     For more information on usage see the example below but most of the methods are meant to be
+#     self-explanatory. Read on opencl usage and possibly pyopencl before using and/or extending to use
+#     more complex methods. For the needs at hand most OpenCL testing at least could be implemented
+#     using this library
+#####
+
 
 class CL:
     def __init__(self):

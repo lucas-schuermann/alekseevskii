@@ -2,6 +2,12 @@ __author__ = 'Lucas'
 
 from time import time
 
+#####
+# Testing class for early prototyping of the Vector, which became the block object in my algorithm implementation
+#     This could provide insight if confused about the methodology underlying the algorithm, i.e. its core
+#     structure. This simple example uses a test condition of satisfying being inside the unit sphere in R^3
+#####
+
 
 class Vector:
     def __init__(self, x=0., y=0.):

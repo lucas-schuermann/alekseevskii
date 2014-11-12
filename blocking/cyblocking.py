@@ -7,6 +7,15 @@ from time import time
 import pyximport; pyximport.install()
 import cyblocking_kernels
 
+#####
+# This file implements the blocking algorithm using Cython
+#    It is not complete, but the beginnings of an interface are here, along with a bit of optimized code
+#    The rest of the work could be fairly straightforward: simply identifying and declaring data types,
+#    then using C-based operations for the time-dependent calculations
+#####
+
+
+# see the index kernel implementation and methodology from the testing section
 ind = cyblocking_kernels.ind_python
 
 

@@ -4,6 +4,8 @@ import numpy as np
 
 from opencl import CL
 
+# Testing the OpenCL API for use with the blocking vectors of 90 doubles (float64 datatype)
+
 
 if __name__ == "__main__":
     cl = CL()

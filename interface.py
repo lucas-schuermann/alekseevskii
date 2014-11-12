@@ -18,6 +18,12 @@ import pylab
 from manager import Manager
 
 
+# this is a testing interface including a plot with matplot lib. This needs to be expanded to interfacing with
+# the manager class in order to provide data updates (take care for the overhead to quantize the data and feed it
+# into the plotting system. For example, dumping the information about each block being examined would quite
+# significantly slow down the algorithm, but incremented the number of blocks checked etc. would not
+
+
 # temporary testing class
 class TestDataGen(object):
     def __init__(self, init=50):

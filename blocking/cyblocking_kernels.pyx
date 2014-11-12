@@ -4,6 +4,10 @@ import math
 import numpy as np
 cimport numpy as np
 
+# implement time-critical parts of the algorithm in Cython
+
+# NOTE THIS IS NOT FINISHED, MANY CHANGES NEEDED
+
 def ind_python(int i, int j, int k):
     return (int)((j-i)+5+5*(i-2)-(1./2.)*(i-1)*(i-2)+15*(k-1)-1)
 
