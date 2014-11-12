@@ -4,8 +4,8 @@ from blocking.blocking import BlockingAlgorithm, BlockingAlgorithmSerial
 from evaluation.evaluation import EvaluationAlgorithm, EvaluationAlgorithmSerial
 
 #####
-#
-#
+# Manages the operation of the algorithms
+#     Needs to be extended to launching the evaluation algorithm upon the completion of the blocking algorithm
 #####
 
 
