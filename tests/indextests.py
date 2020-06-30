@@ -2,6 +2,7 @@
 # was to obtain the index in a vector from the mu i mu j and mu k
 
 import timeit
+
 import pyximport
 pyximport.install()
 import cythontests
@@ -10,6 +11,7 @@ import cythontests
 def ind(i, j, k):
     return int((j - i) + 5 + 5 * (i - 2) - (1. / 2.) * (i - 1) * (i - 2) + 15 *
                (k - 1))
+
 
 if __name__ == "__main__":
     num = 500000
