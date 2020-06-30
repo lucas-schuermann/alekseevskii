@@ -1,5 +1,9 @@
 __author__ = 'Lucas Schuermann'
 
+from time import time
+import math
+import numpy as np
+
 ######
 # The core blocking algorithm
 #    This implements the core iterative algorithm including condition checks over the blocks
@@ -11,10 +15,6 @@ __author__ = 'Lucas Schuermann'
 #    Additionally, see notes for the mathematics behind the implementation of each specific condition
 #    unimodular, sphere, jacobi, einstein with poly min max in object condition method
 ######
-
-from time import time
-import math
-import numpy as np
 
 
 class BlockingAlgorithm:
