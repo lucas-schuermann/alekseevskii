@@ -1,57 +1,58 @@
-__author__ = 'Lucas Schuermann'
+# The core blocking algorithm
+#
+# This implements the core iterative algorithm including condition checks over the blocks
+# ind is used to find the index in the blocking arrays (see notes)
+# Blocking algorithm consists of the object condition implementation which checks a block.
+# Additionally, it has methods such as add blocks from which moves to the next level of iteration
+#
+# Starting condition and constants are set according to notes
+# Additionally, see notes for the mathematics behind the implementation of each specific condition
+# unimodular, sphere, jacobi, einstein with poly min max in object condition method
 
 from time import time
 import math
 import numpy as np
 
-######
-# The core blocking algorithm
-#    This implements the core iterative algorithm including condition checks over the blocks
-#    ind is used to find the index in the blocking arrays (see notes)
-#    Blocking algorithm consists of the object condition implementation which checks a block.
-#    Additionally, it has methods such as add blocks from which moves to the next level of iteration
-##
-#    Starting condition and constants are set according to notes
-#    Additionally, see notes for the mathematics behind the implementation of each specific condition
-#    unimodular, sphere, jacobi, einstein with poly min max in object condition method
-######
-
 
 class BlockingAlgorithm:
+
     def __init__(self):
         self.blocks = list()
         self.side_length = 1.0
-        self.sphere_bound = math.sqrt(90.)/2.*self.side_length
+        self.sphere_bound = math.sqrt(90.) / 2. * self.side_length
         self.num_checked = 0
 
     def iterate(self):
         pass
 
+
 def ind(i, j, k):
-    return int((j-i)+5+5*(i-2)-(1.0/2.0)*(i-1)*(i-2)+15*(k-1)-1)
+    return int((j - i) + 5 + 5 * (i - 2) - (1.0 / 2.0) * (i - 1) * (i - 2) +
+               15 * (k - 1) - 1)
 
 
 class BlockingAlgorithmSerial(BlockingAlgorithm):
+
     def __init__(self):
         BlockingAlgorithm.__init__(self)
 
     def _object_condition(self, block):
         # find min and max on block
-        blkmin = np.array([0.0]*90)
-        blkmax = np.array([0.0]*90)
+        blkmin = np.array([0.0] * 90)
+        blkmax = np.array([0.0] * 90)
         for i in range(90):
             blkmin[i] = block[i] - self.side_length
             blkmax[i] = block[i] + self.side_length
 
         def get_min(i, j, k):
             if i <= 6 and j <= 6 and k <= 6 and i < j:
-                assert(0 <= ind(i,j,k) <= 89)
+                assert (0 <= ind(i, j, k) <= 89)
                 return blkmin[ind(i, j, k)]
             return 0.0
 
         def get_max(i, j, k):
             if i <= 6 and j <= 6 and k <= 6 and i < j:
-                assert(0 <= ind(i,j,k) <= 89)
+                assert (0 <= ind(i, j, k) <= 89)
                 return blkmax[ind(i, j, k)]
             return 0.0
 
@@ -59,7 +60,7 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
         unimin = 0.0
         unimax = 0.0
         for i in range(1, 7):
-            for j in range(i+1, 7):
+            for j in range(i + 1, 7):
                 unimin += get_min(i, j, j)
                 unimax += get_max(i, j, j)
         if not unimin <= 0. <= unimax:
@@ -83,11 +84,12 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
             def term(expr):
                 if type(expr) is not float:
                     argcnt = 0
-                    args = [0]*3
+                    args = [0] * 3
                     for exprcnt in range(3):
                         args[argcnt] = vars[expr[exprcnt]]
                         argcnt += 1
-                    return get_min(args[0], args[1], args[2]), get_max(args[0], args[1], args[2])
+                    return get_min(args[0], args[1],
+                                   args[2]), get_max(args[0], args[1], args[2])
                 else:
                     return expr, expr
 
@@ -97,10 +99,10 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
                 tmin = tmax = 1.0
                 for i in t:
                     valmin, valmax = term(i)
-                    tmp1 = tmin*valmin
-                    tmp2 = tmin*valmax
-                    tmp3 = tmax*valmin
-                    tmp4 = tmax*valmax
+                    tmp1 = tmin * valmin
+                    tmp2 = tmin * valmax
+                    tmp3 = tmax * valmin
+                    tmp4 = tmax * valmax
                     if tmp1 < tmp2:
                         tmin = tmp1
                     else:
@@ -117,11 +119,12 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
 
         # jacobi condition
         # i=0, j=1, k=2, l=3, m=4
-        jacterms = (((1, 2, 4), (4, 2, 3)), ((1, 2, 4), (4, 0, 3)), ((2, 0, 4), (4, 1, 3)))
+        jacterms = (((1, 2, 4), (4, 2, 3)), ((1, 2, 4), (4, 0, 3)), ((2, 0, 4),
+                                                                     (4, 1, 3)))
 
         for k in range(1, 7):
             for i in range(1, 7):
-                for j in range(i+1, 7):
+                for j in range(i + 1, 7):
                     jacmin = jacmax = 0.0
                     for l in range(1, 7):
                         for m in range(1, 7):
@@ -139,7 +142,9 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
 
         # einstein condition
         # i=0, j=1, k=2, l=3
-        einterms = ((-1./2., (0, 2, 3), (1, 2, 3)), ((-1./2.), (1, 2, 3), (0, 3, 2)), ((1./4.), (2, 3, 0), (2, 3, 1)))
+        einterms = ((-1. / 2., (0, 2, 3), (1, 2, 3)),
+                    ((-1. / 2.), (1, 2, 3), (0, 3, 2)), ((1. / 4.), (2, 3, 0),
+                                                         (2, 3, 1)))
 
         def ric(i, j):
             smin = 0.0
@@ -174,7 +179,7 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
     def _add_blocks_from(self, b0):
         print("iterating over", b0)
         for side in range(180):
-            delta = np.array([0.0]*90)
+            delta = np.array([0.0] * 90)
             if side < 90:
                 delta[side] = self.side_length
             else:
@@ -204,9 +209,11 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
         print("\n")
 
     def iterate(self):
-        start = np.array([0.0]*90)
-        start[ind(1,2,3)] = start[ind(1,3,2)] = start[ind(4,6,5)] = start[ind(4,5,6)] = 1.0/math.sqrt(6.0)
-        start[ind(2,3,1)] = start[ind(5,6,4)] = -1.0/math.sqrt(6.0)
+        start = np.array([0.0] * 90)
+        start[ind(1, 2, 3)] = start[ind(1, 3,
+                                        2)] = start[ind(4, 6, 5)] = start[ind(
+                                            4, 5, 6)] = 1.0 / math.sqrt(6.0)
+        start[ind(2, 3, 1)] = start[ind(5, 6, 4)] = -1.0 / math.sqrt(6.0)
         self.blocks.append(start)
         checked = 0
 
@@ -220,6 +227,7 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
                 checked += 1
         return self.blocks
 
+
 if __name__ == '__main__':
     blocker = BlockingAlgorithmSerial()
 
@@ -231,4 +239,4 @@ if __name__ == '__main__':
     print("elapsed time:", elapsed, "seconds")
     print("blocks used:", len(output))
     print("blocks checked:", blocker.num_checked)
-    print("avg time per block:", elapsed/blocker.num_checked, "seconds")
+    print("avg time per block:", elapsed / blocker.num_checked, "seconds")

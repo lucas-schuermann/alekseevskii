@@ -1,5 +1,3 @@
-__author__ = 'Lucas Schuermann'
-
 # See notes for the derivation of the index function
 # Testing implementation using different methodologies in Cython
 
