@@ -42,7 +42,7 @@ def object_condition(block, side_length, sphere_bound):
             unimin += get_min(i, j, j)
             unimax += get_max(i, j, j)
     if not unimin <= 0. <= unimax:
-        print "Failed unimodular"
+        print("Failed unimodular")
         return False
 
     # sphere condition
@@ -52,7 +52,7 @@ def object_condition(block, side_length, sphere_bound):
         s += block[i]**2
     m = math.sqrt(s)
     if not (m - b) <= 1.0 <= (m + b):
-        print "Failed sphere"
+        print("Failed sphere")
         return False
 
     def poly_min_max(terms, i, j, k, l, m=None):
@@ -112,7 +112,7 @@ def object_condition(block, side_length, sphere_bound):
                         jacmin += rmin
                         jacmax += rmax
                 if not jacmin <= 0. <= jacmax:
-                    print "Failed Jacobi"
+                    print("Failed Jacobi")
                     return False
 
     # einstein condition
@@ -141,10 +141,10 @@ def object_condition(block, side_length, sphere_bound):
                 jjmin, jjmax = ric(j, j)
 
                 if not ijmin <= 0. <= ijmax:
-                    print "Failed: No Einstein metrics"
+                    print("Failed: No Einstein metrics")
                     return False
 
                 if not (iimin - jjmax) <= 0. <= (iimax - jjmin):
-                    print "Failed: No possibility of Einstein metrics"
+                    print("Failed: No possibility of Einstein metrics")
                     return False
     return True

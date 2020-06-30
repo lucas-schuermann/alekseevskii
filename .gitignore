@@ -4,3 +4,4 @@ Alekseevskii Conjecture.xcodeproj/
 .idea
 *.iml
 *.pyc
+.DS_Store

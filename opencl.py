@@ -15,8 +15,10 @@ from collections import defaultdict
 
 class CL:
     def __init__(self):
-        self.ctx = cl.create_some_context(answers=["1"])
-        print "Using CL Device:", self.ctx.devices[0].vendor, self.ctx.devices[0].name
+        platform = cl.get_platforms()
+        my_gpu_devices = platform[0].get_devices(device_type=cl.device_type.GPU)
+        self.ctx = cl.Context(devices=my_gpu_devices)
+        print("Using CL Device:", self.ctx.devices[0].vendor, self.ctx.devices[0].name)
         self.queue = cl.CommandQueue(self.ctx)
         self.programs = {}
         self.buffers = defaultdict(dict)
@@ -25,16 +27,16 @@ class CL:
         f = open(filename, 'r')
         fstr = "".join(f.readlines())
         self.programs[name] = cl.Program(self.ctx, fstr).build()
-        print "Added program", "\"" + name + "\""
+        print("Added program", "\"" + name + "\"")
 
     def build_program(self, name, fstr):
         self.programs[name] = cl.Program(self.ctx, fstr).build()
-        print "Added program", "\"" + name + "\""
+        print("Added program", "\"" + name + "\"")
 
     def add_read_buffer(self, program, name, data):
         mf = cl.mem_flags
         self.buffers[program][name] = cl.Buffer(self.ctx, mf.READ_ONLY | mf.COPY_HOST_PTR, hostbuf=data)
-        print "Added read buffer", "\"" + name + "\"", "to program", "\"" + program + "\""
+        print("Added read buffer", "\"" + name + "\"", "to program", "\"" + program + "\"")
 
     def add_intermediate_buffer(self, program, name, data):
         mf = cl.mem_flags
@@ -43,18 +45,18 @@ class CL:
     def add_write_buffer(self, program, name, nbytes):
         mf = cl.mem_flags
         self.buffers[program][name] = cl.Buffer(self.ctx, mf.WRITE_ONLY, nbytes)
-        print "Added write buffer", "\"" + name + "\"", "to program", program
+        print("Added write buffer", "\"" + name + "\"", "to program", program)
 
     def read_buffer(self, program, name, size, dtype):
         result = numpy.array(list(range(size)), dtype=dtype)
-        print "Enqueueing buffer copy for", "\"" + name + "\"", "of program", "\"" + program + "\"", \
-              "with size", result.size, "and type", dtype
-        cl.enqueue_read_buffer(self.queue, self.buffers[program][name], result).wait()
+        print("Enqueueing buffer copy for", "\"" + name + "\"", "of program", "\"" + program + "\"", \
+              "with size", result.size, "and type", dtype)
+        cl.enqueue_copy(self.queue, result, self.buffers[program][name]).wait()
         return result
 
     def execute_program_kernel(self, program, kernel, dim, *args):
-        print "Enqueueing kernel", "\"" + kernel + "\"", "of program", "\"" + program + "\"", "with arguments", \
-              list(args)
+        print("Enqueueing kernel", "\"" + kernel + "\"", "of program", "\"" + program + "\"", "with arguments", \
+              list(args))
         args = [self.buffers[program][i] for i in args]
         self.programs[program].__getattr__(kernel)(self.queue, dim, None, *args)
 

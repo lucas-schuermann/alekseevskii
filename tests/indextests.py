@@ -15,24 +15,24 @@ def ind(i, j, k):
 if __name__ == "__main__":
     num = 500000
     t = timeit.Timer("indextests.ind(%d,%d,%d)" % (1,1,1), "import indextests")
-    print "Pure python function", t.timeit(num), "sec"
+    print("Pure python function", t.timeit(num), "sec")
     t = timeit.Timer("cythontests.ind(%d,%d,%d)" % (1,1,1), "import pyximport; pyximport.install(); import cythontests")
-    print "Cython function no cast", t.timeit(num), "sec"
+    print("Cython function no cast", t.timeit(num), "sec")
     t = timeit.Timer("int(cythontests.ind(%d,%d,%d))" % (1,1,1), "import pyximport; pyximport.install(); import cythontests")
-    print "Cython function with Python type cast", t.timeit(num), "sec"
+    print("Cython function with Python type cast", t.timeit(num), "sec")
     t = timeit.Timer("cythontests.ind2(%d,%d,%d)" % (1,1,1), "import pyximport; pyximport.install(); import cythontests")
-    print "Cython function with cast", t.timeit(num), "sec"
+    print("Cython function with cast", t.timeit(num), "sec")
 
-    print ind(1,1,1)
-    print cythontests.ind(1,1,1)
-    print int(cythontests.ind(1,1,1))
-    print cythontests.ind2(1,1,1)
+    print(ind(1,1,1))
+    print(cythontests.ind(1,1,1))
+    print(int(cythontests.ind(1,1,1)))
+    print(cythontests.ind2(1,1,1))
 
 # Results (avg execution time @ 500000 iterations, in seconds)
 #
-# Pure: 0.45526599884
-# Cython no cast: 0.0767078399658
-# Cython pycast: 0.155315876007
-# Cython cast: 0.136200904846
+# Pure python function 0.21579052900000006 sec
+# Cython function no cast 0.04513908499999997 sec
+# Cython function with Python type cast 0.09326969099999993 sec
+# Cython function with cast 0.04489870500000004 sec
 #
-# Fastest: Cython pycast, since a cast must be included
+# Fastest: Cython pycast

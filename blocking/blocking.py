@@ -63,7 +63,7 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
                 unimin += get_min(i, j, j)
                 unimax += get_max(i, j, j)
         if not unimin <= 0. <= unimax:
-            print "Failed unimodular"
+            print("Failed unimodular")
             return False
 
         # sphere condition
@@ -73,7 +73,7 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
             s += block[i]**2
         m = math.sqrt(s)
         if not (m - b) <= 1.0 <= (m + b):
-            print "Failed sphere"
+            print("Failed sphere")
             return False
 
         # returns the min and max of a polynomial with terms given by a list of double of triplates
@@ -134,7 +134,7 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
                             jacmin += rmin
                             jacmax += rmax
                     if not jacmin <= 0. <= jacmax:
-                        print "Failed Jacobi"
+                        print("Failed Jacobi")
                         return False
 
         # einstein condition
@@ -163,32 +163,32 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
                     jjmin, jjmax = ric(j, j)
 
                     if not ijmin <= 0. <= ijmax:
-                        print "Failed: No Einstein metrics"
+                        print("Failed: No Einstein metrics")
                         return False
 
                     if not (iimin - jjmax) <= 0. <= (iimax - jjmin):
-                        print "Failed: No possibility of Einstein metrics"
+                        print("Failed: No possibility of Einstein metrics")
                         return False
         return True
 
     def _add_blocks_from(self, b0):
-        print "iterating over", b0
+        print("iterating over", b0)
         for side in range(180):
             delta = np.array([0.0]*90)
             if side < 90:
                 delta[side] = self.side_length
             else:
                 delta[side - 90] = -self.side_length
-            print "testing", b0 + delta, "..."
+            print("testing", b0 + delta, "...")
             self.num_checked += 1
             if self._object_condition(b0 + delta):
                 if not self._redundant(b0 + delta):
                     self.blocks.append(b0 + delta)
-                    print "added"
+                    print("added")
                 else:
-                    print "rejected"
+                    print("rejected")
             else:
-                print "rejected"
+                print("rejected")
 
     def _redundant(self, block):
         for b in self.blocks:
@@ -198,10 +198,10 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
 
     @staticmethod
     def _print_blocks(blocks):
-        print "current blocks:"
+        print("current blocks:")
         for b in blocks:
-            print str(b)
-        print "\n"
+            print(str(b))
+        print("\n")
 
     def iterate(self):
         start = np.array([0.0]*90)
@@ -228,7 +228,7 @@ if __name__ == '__main__':
     tf = time()
 
     elapsed = tf - t0
-    print "elapsed time:", elapsed, "seconds"
-    print "blocks used:", len(output)
-    print "blocks checked:", blocker.num_checked
-    print "avg time per block:", elapsed/blocker.num_checked, "seconds"
+    print("elapsed time:", elapsed, "seconds")
+    print("blocks used:", len(output))
+    print("blocks checked:", blocker.num_checked)
+    print("avg time per block:", elapsed/blocker.num_checked, "seconds")
