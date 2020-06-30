@@ -1,7 +1,7 @@
 # alekseevskii
-Exhaustive numerical admissibility analysis of spatial blocks towards a resolution of the long-standing Alekseevkii Conjecture
+Numerical classification of unimodular Einstein Lie groups towards resolving the long-standing generalized Alekseevskii conjecture
 
-Updated for modern python/opencl
+Updated in 2020 for modern python/opencl
 
 ## Notes
 - In the 1970s, it was conjectured by D. Alekseevskii that any (non-compact) homogeneous Einstein space of negative scalar curvature is diffeomorphic to R^n. In other words, the Classical Alekseevskii Conjecture states: Given a homogeneous Einstein space G/K with negative scalar curvature, K must be a maximal compact subgroup of G [[Jablonski](https://arxiv.org/abs/1403.5037)].
