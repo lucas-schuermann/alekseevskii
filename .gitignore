@@ -1,3 +1,2 @@
-*.hmap
-DerivedData/
-Alekseevskii Conjecture.xcodeproj/
+.DS_Store
+*.o
