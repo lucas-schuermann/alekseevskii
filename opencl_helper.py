@@ -10,7 +10,7 @@ import numpy
 from collections import defaultdict
 
 
-class CL:
+class CLHelper:
 
     def __init__(self):
         platform = cl.get_platforms()
@@ -53,7 +53,7 @@ class CL:
         print("Added write buffer", "\"" + name + "\"", "to program", program)
 
     def read_buffer(self, program, name, size, dtype):
-        result = numpy.array(list(range(size)), dtype=dtype)
+        result = numpy.empty(size, dtype=dtype)
         print("Enqueueing buffer copy for", "\"" + name + "\"", "of program", "\"" + program + "\"", \
               "with size", result.size, "and type", dtype)
         cl.enqueue_copy(self.queue, result, self.buffers[program][name]).wait()
@@ -67,22 +67,22 @@ class CL:
 
 
 if __name__ == "__main__":
-    cltest = CL()
-    cltest.build_program("Test", (
+    clh = CLHelper()
+    clh.build_program("Test", (
         "__kernel void test(__global float* a, __global float* b, __global float* c)\n"
         "{\n"
         "    unsigned int i = get_global_id(0);\n"
         "    c[i] = a[i] + b[i];\n"
         "}\n"))
     test_array = numpy.array(list(range(10)), dtype=numpy.float32)
-    cltest.add_read_buffer("Test", "a", test_array)
-    cltest.add_read_buffer("Test", "b", test_array)
-    cltest.add_write_buffer("Test", "c", test_array.nbytes)
-    cltest.execute_program_kernel("Test", "test", test_array.shape, "a", "b",
+    clh.add_read_buffer("Test", "a", test_array)
+    clh.add_read_buffer("Test", "b", test_array)
+    clh.add_write_buffer("Test", "c", test_array.nbytes)
+    clh.execute_program_kernel("Test", "test", test_array.shape, "a", "b",
                                   "c")
-    a = cltest.read_buffer("Test", "a", test_array.size, test_array.dtype)
-    b = cltest.read_buffer("Test", "b", test_array.size, test_array.dtype)
-    c = cltest.read_buffer("Test", "c", test_array.size, test_array.dtype)
+    a = clh.read_buffer("Test", "a", test_array.size, test_array.dtype)
+    b = clh.read_buffer("Test", "b", test_array.size, test_array.dtype)
+    c = clh.read_buffer("Test", "c", test_array.size, test_array.dtype)
     print("Array A:", list(a))
     print("Array B:", list(b))
     print("Result (A+B):", list(c))
