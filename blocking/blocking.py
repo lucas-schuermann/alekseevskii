@@ -15,7 +15,6 @@ import numpy as np
 
 
 class BlockingAlgorithm:
-
     def __init__(self):
         self.blocks = list()
         self.side_length = 1.0
@@ -32,7 +31,6 @@ def ind(i, j, k):
 
 
 class BlockingAlgorithmSerial(BlockingAlgorithm):
-
     def __init__(self):
         BlockingAlgorithm.__init__(self)
 
@@ -119,8 +117,8 @@ class BlockingAlgorithmSerial(BlockingAlgorithm):
 
         # jacobi condition
         # i=0, j=1, k=2, l=3, m=4
-        jacterms = (((1, 2, 4), (4, 2, 3)), ((1, 2, 4), (4, 0, 3)), ((2, 0, 4),
-                                                                     (4, 1, 3)))
+        jacterms = (((1, 2, 4), (4, 2, 3)), ((1, 2, 4), (4, 0, 3)),
+                    ((2, 0, 4), (4, 1, 3)))
 
         for k in range(1, 7):
             for i in range(1, 7):

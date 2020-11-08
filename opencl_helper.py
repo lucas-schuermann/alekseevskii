@@ -11,10 +11,10 @@ from collections import defaultdict
 
 
 class CLHelper:
-
     def __init__(self):
         platform = cl.get_platforms()
-        my_gpu_devices = platform[0].get_devices(device_type=cl.device_type.GPU)
+        my_gpu_devices = platform[0].get_devices(
+            device_type=cl.device_type.GPU)
         self.ctx = cl.Context(devices=my_gpu_devices)
         print("Using CL Device:", self.ctx.devices[0].vendor,
               self.ctx.devices[0].name)
@@ -35,7 +35,8 @@ class CLHelper:
     def add_read_buffer(self, program, name, data):
         mf = cl.mem_flags
         self.buffers[program][name] = cl.Buffer(self.ctx,
-                                                mf.READ_ONLY | mf.COPY_HOST_PTR,
+                                                mf.READ_ONLY
+                                                | mf.COPY_HOST_PTR,
                                                 hostbuf=data)
         print("Added read buffer", "\"" + name + "\"", "to program",
               "\"" + program + "\"")
@@ -43,13 +44,14 @@ class CLHelper:
     def add_intermediate_buffer(self, program, name, data):
         mf = cl.mem_flags
         self.buffers[program][name] = cl.Buffer(self.ctx,
-                                                mf.READ_WRITE |
-                                                mf.COPY_HOST_PTR,
+                                                mf.READ_WRITE
+                                                | mf.COPY_HOST_PTR,
                                                 hostbuf=data)
 
     def add_write_buffer(self, program, name, nbytes):
         mf = cl.mem_flags
-        self.buffers[program][name] = cl.Buffer(self.ctx, mf.WRITE_ONLY, nbytes)
+        self.buffers[program][name] = cl.Buffer(self.ctx, mf.WRITE_ONLY,
+                                                nbytes)
         print("Added write buffer", "\"" + name + "\"", "to program", program)
 
     def read_buffer(self, program, name, size, dtype):
@@ -63,7 +65,8 @@ class CLHelper:
         print("Enqueueing kernel", "\"" + kernel + "\"", "of program", "\"" + program + "\"", "with arguments", \
               list(args))
         args = [self.buffers[program][i] for i in args]
-        self.programs[program].__getattr__(kernel)(self.queue, dim, None, *args)
+        self.programs[program].__getattr__(kernel)(self.queue, dim, None,
+                                                   *args)
 
 
 if __name__ == "__main__":
@@ -78,8 +81,7 @@ if __name__ == "__main__":
     clh.add_read_buffer("Test", "a", test_array)
     clh.add_read_buffer("Test", "b", test_array)
     clh.add_write_buffer("Test", "c", test_array.nbytes)
-    clh.execute_program_kernel("Test", "test", test_array.shape, "a", "b",
-                                  "c")
+    clh.execute_program_kernel("Test", "test", test_array.shape, "a", "b", "c")
     a = clh.read_buffer("Test", "a", test_array.size, test_array.dtype)
     b = clh.read_buffer("Test", "b", test_array.size, test_array.dtype)
     c = clh.read_buffer("Test", "c", test_array.size, test_array.dtype)

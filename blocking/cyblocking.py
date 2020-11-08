@@ -18,7 +18,6 @@ ind = cyblocking_kernels.ind_python
 
 
 class BlockingAlgorithmCython(BlockingAlgorithm):
-
     def __init__(self):
         BlockingAlgorithm.__init__(self)
 
