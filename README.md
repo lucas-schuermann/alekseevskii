@@ -1,9 +1,9 @@
-# alekseevskii
-Numerical classification of unimodular Einstein Lie groups towards resolving the long-standing generalized Alekseevskii conjecture
+`alekseevskii` attempts numerical classification of unimodular Einstein Lie groups towards resolving the long-standing generalized Alekseevskii conjecture. This repository was updated in 2020 for modern Python/OpenCL.
 
-Updated in 2020 for modern Python/OpenCL
+## License
+This project is distributed under the [MIT license](LICENSE.md).
 
-## Notes
+## Note
 - In the 1970s, it was conjectured by D. Alekseevskii that any (non-compact) homogeneous Einstein space of negative scalar curvature is diffeomorphic to R^n. In other words, the Classical Alekseevskii Conjecture states: Given a homogeneous Einstein space G/K with negative scalar curvature, K must be a maximal compact subgroup of G [[Jablonski](https://arxiv.org/abs/1403.5037)].
 - `blocking` contains an implementation of a numerical search algorithm in python and cython
   - blocks are sampled from the unit cube of a specified dimension in R^n
